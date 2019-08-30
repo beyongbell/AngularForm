@@ -1,21 +1,70 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/cli">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<div class="container-fluid">
+  <h1>Form</h1>
+  <form #userForm="ngForm" novalidate (ngSubmit)="onSubmit()">
+      <!-- <hr>
+    {{ userForm.value | json }}
+    <hr>
+    {{ userModel | json }}
+    <hr> -->
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" [class.is-invalid]="name.invalid && name.touched" 
+      name="name" [(ngModel)]="userModel.name" #name="ngModel" required>
+      <small class="text-danger" [class.d-none]="name.valid || name.untouched"> Name is required </small>
+    </div>
 
-<router-outlet></router-outlet>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" class="form-control" name="email" [(ngModel)]="userModel.email">
+    </div>
+    <div class="form-group">
+      <label for="phone">Phone</label>
+      <input type="tel" class="form-control" #phone="ngModel" pattern="^\d{10}$" required
+      [class.is-invalid]="phone.invalid && phone.touched" name="phone" [(ngModel)]="userModel.phone">
+      <div *ngIf="phone.errors && (phone.invalid || phone.touched)">
+        <small class="text-danger" *ngIf="phone?.errors.required"> Phone Number is required </small>
+        <small class="text-danger" *ngIf="phone?.errors.pattern">  Phone Number must be 10 degits </small>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="topic">Topic</label>
+      <select (blur)="validateTopic(topic.value)" (change)="validateTopic(topic.value)"
+      class="custom-select" name="topic" [(ngModel)]="userModel.topic" required
+      #topic="ngModel" [class.is-invalid]="topicHasError && topic.touched">
+        <option value="default" selected> I am interested in </option>
+        <option *ngFor="let item of topics">{{ item }}</option>
+      </select>
+      <small class="text-danger" [class.d-none]="!topicHasError || topic.untouched"> Please choose a topic </small>
+    </div>
+    <div class="mb-3">
+      <label for="time"> Time Perference </label>
+      <div class="form-check">
+        <input type="form-check-input" type="radio" name="time" value="morning" [(ngModel)]="userModel.time">
+        <label class="form-check-label"> Morning </label>
+      </div>
+      <div class="form-check">
+        <input type="form-check-input" type="radio" name="time" value="evening" [(ngModel)]="userModel.time">
+        <label class="form-check-label"> Evening </label>
+      </div>
+    </div>
+    <!-- <div [(ngModel)]Group="address">
+      <div class="form-group">
+        <label for="street"> Street </label>
+        <input type="text" class="form-control" name="street" ngModel>
+      </div>
+      <div class="form-group">
+        <label for="street"> City </label>
+        <input type="text" class="form-control" name="city" ngModel>
+      </div>
+      <div class="form-group">
+        <label for="street"> State </label>
+        <input type="text" class="form-control" name="state" ngModel>
+      </div>
+    </div> -->
+    <div class="form-check mb-3">
+      <input type="checkbox" class="form-check-input" name="subscribe" [(ngModel)]="userModel.subscribe">
+      <label class="form-check-label"> Send me Offers </label>
+    </div>
+    <button [disabled]="userForm.form.invalid || topicHasError" class="btn btn-primary" type="submit"> Submit Form </button>
+  </form>
+</div>
